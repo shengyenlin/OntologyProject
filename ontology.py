@@ -98,10 +98,6 @@ class CryptocurrencyMarket(FinancialMarket):
     pass
 
 @dataclass
-class FinancialInstrumentMarket(FinancialMarket):
-    pass
-
-@dataclass
 class SecutityCompany():
     pass
 
@@ -187,61 +183,63 @@ class PreferredStock(EquityInstruments):
 class Warrant(EquityInstruments):
     pass
 
-@dataclass
-class Option(Derivative):
-    pass
+# TODO: fourth classes Turn to instances 
+# @dataclass
+# class Option(Derivative):
+#     pass
 
-@dataclass
-class Future(Derivative):
-    pass
+# @dataclass
+# class Future(Derivative):
+#     pass
 
-@dataclass
-class Forward(Derivative):
-    pass
+# @dataclass
+# class Forward(Derivative):
+#     pass
 
-@dataclass
-class Swap(Derivative):
-    pass
+# @dataclass
+# class Swap(Derivative):
+#     pass
 
-@dataclass
-class Commodity(Derivative):
-    pass
+# @dataclass
+# class Commodity(Derivative):
+#     pass
 
-@dataclass
-class IndexFund(MutualFund):
-    pass
+# @dataclass
+# class IndexFund(MutualFund):
+#     pass
 
-@dataclass
-class BondFund(MutualFund):
-    pass
+# @dataclass
+# class BondFund(MutualFund):
+#     pass
 
-@dataclass
-class HedgeFund(MutualFund):
-    pass
+# @dataclass
+# class HedgeFund(MutualFund):
+#     pass
 
-@dataclass
-class RealEstateInvestmentTrust(MutualFund):
-    pass
+# @dataclass
+# class RealEstateInvestmentTrust(MutualFund):
+#     pass
 
-@dataclass
-class ExchangeTradedFund(ETF):
-    pass
+# TODO: fourth classes Turn to instances 
+# @dataclass
+# class ExchangeTradedFund(ETF):
+#     pass
 
-@dataclass
-class CommodityETF(ETF):
-    pass
+# @dataclass
+# class CommodityETF(ETF):
+#     pass
 
-@dataclass
-class CurrencyETF(ETF):
-    pass
+# @dataclass
+# class CurrencyETF(ETF):
+#     pass
 
-@dataclass
-class RealEstateETF(ETF):
-    pass
+# @dataclass
+# class RealEstateETF(ETF):
+#     pass
 
-@dataclass
-class CryptocurrencyETF(ETF):
-    pass
+# @dataclass
+# class CryptocurrencyETF(ETF):
+#     pass
 
 #### Relations ####
 @dataclass
@@ -293,6 +291,9 @@ class FinancialRegulationImpact(PolicyImpact):
     policy: FinancialRegulation
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
     policy_maker: Regulators
+
+# TODO: think about more relationships
+# TODO: 
 
 # @dataclass
 # class FinancialStability():
