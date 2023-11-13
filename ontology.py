@@ -10,15 +10,18 @@ class JudicialEntity:
     RegulatoryAuthority: str
     LegalSystem: str
 
+
 @dataclass
 class FinancialMarket:
     # properties
     name: str
     country: str
     currency: str
-    timezone: str
-    opening_time: str
-    closing_time: str
+    # timezone: str
+    # opening_time: str
+    # closing_time: str
+    regulatory_body: JudicialEntity
+
 
 @dataclass
 class FinancialInstruments:
@@ -26,80 +29,103 @@ class FinancialInstruments:
     name: str
     annual_return: float
     risk: float
-    issued_institution: JudicialEntity # TODO: modify to a subclass of JudicialEntity
-    market: JudicialEntity # TODO: modify to a subclass of JudicialEntity, market where this financial instrument is traded
+    issued_institution: JudicialEntity  # TODO: modify to a subclass of JudicialEntity
+    market: JudicialEntity  # TODO: modify to a subclass of JudicialEntity, market where this financial instrument is traded
+
 
 @dataclass
 class GovernmentPolicy:
     pass
 
+
 @dataclass
 class MonetaryPolicy(GovernmentPolicy):
     pass
+
 
 @dataclass
 class FiscalPolicy(GovernmentPolicy):
     pass
 
+
 @dataclass
 class FinancialRegulation(GovernmentPolicy):
     pass
+
 
 @dataclass
 class FinancialInstitutions(JudicialEntity):
     pass
 
+
 @dataclass
 class Banks(FinancialInstitutions):
     pass
+
 
 @dataclass
 class SecuritiesFirms(FinancialInstitutions):
     pass
 
+
 @dataclass
 class InsuranceCompanies(FinancialInstitutions):
     pass
+
 
 @dataclass
 class CreditRatingAgency(FinancialInstitutions):
     pass
 
+
 @dataclass
 class Government(JudicialEntity):
     pass
+
 
 @dataclass
 class Regulators(JudicialEntity):
     pass
 
+
 @dataclass
 class StockExchange(FinancialMarket):
     pass
+
 
 @dataclass
 class BondMarket(FinancialMarket):
     pass
 
+
 @dataclass
 class MoneyMarket(FinancialMarket):
     pass
+
 
 @dataclass
 class ForeignExchangeMarket(FinancialMarket):
     pass
 
+
 @dataclass
 class CommodityMarket(FinancialMarket):
     pass
+
+
+class DerivativesMarket(FinancialMarket):
+    pass
+
 
 @dataclass
 class CryptocurrencyMarket(FinancialMarket):
     pass
 
+
 @dataclass
 class SecutityCompany():
     pass
+
 
 @dataclass
 class DebtInstrument(FinancialInstruments):
@@ -108,30 +134,36 @@ class DebtInstrument(FinancialInstruments):
     issuer: SecutityCompany
     market: FinancialMarket
 
+
 @dataclass
 class EquityInstruments(FinancialInstruments):
     # properties
     pass
+
 
 @dataclass
 class Derivative(FinancialInstruments):
     # properties
     pass
 
+
 @dataclass
 class MutualFund(FinancialInstruments):
     # properties
     pass
+
 
 @dataclass
 class ETF(FinancialInstruments):
     # properties
     pass
 
+
 @dataclass
 class CommodityAndRealAssets(FinancialInstruments):
     storage_cost: float
     pass
+
 
 @dataclass
 class Cryptocurrencies(FinancialInstruments):
@@ -142,48 +174,59 @@ class Cryptocurrencies(FinancialInstruments):
 class CentralBank(Government):
     pass
 
+
 @dataclass
 class SecuritiesAndExchangeCommission(Regulators):
     pass
+
 
 @dataclass
 class CorporateBond(DebtInstrument):
     pass
 
+
 @dataclass
 class GovernmentBond(DebtInstrument):
     pass
+
 
 @dataclass
 class MunicipalBond(DebtInstrument):
     pass
 
+
 @dataclass
 class MortgageBackedSecurity(DebtInstrument):
     pass
 
+
 @dataclass
 class AssetBackedSecurity(DebtInstrument):
     pass
+
 
 # TODO: !
 @dataclass
 class CollateralizedDebtObligation(DebtInstrument):
     pass
 
+
 @dataclass
 class CommonStock(EquityInstruments):
     pass
+
 
 @dataclass
 class PreferredStock(EquityInstruments):
     pass
 
+
 @dataclass
 class Warrant(EquityInstruments):
     pass
 
-# TODO: fourth classes Turn to instances 
+
+# TODO: fourth classes Turn to instances
 # @dataclass
 # class Option(Derivative):
 #     pass
@@ -247,15 +290,18 @@ class Issuance:
     financial_instrument: FinancialInstruments
     issuer: FinancialInstitutions
 
+
 @dataclass
 class RegulatoryOversight:
     regulator: Regulators
     entity: Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]
 
+
 @dataclass
 class MarketParticipation:
     financial_instrument: FinancialInstruments
     market: FinancialMarket
+
 
 @dataclass
 class Compliance:
@@ -263,10 +309,12 @@ class Compliance:
     regulator: Regulators
     compliant: bool
 
+
 @dataclass
 class JurisdictionalScope:
     jurisdiction: JudicialEntity
     applicable_entities: List[Union[FinancialInstitutions, FinancialMarket]]
+
 
 @dataclass
 class PolicyImpact:
@@ -274,11 +322,13 @@ class PolicyImpact:
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
     policy_maker: Government
 
+
 @dataclass
 class FiscalPolicyImpact(PolicyImpact):
     policy: FiscalPolicy
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
     policy_maker: Government
+
 
 @dataclass
 class MonetaryPolicyImpact(PolicyImpact):
@@ -286,11 +336,13 @@ class MonetaryPolicyImpact(PolicyImpact):
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
     policy_maker: CentralBank
 
+
 @dataclass
 class FinancialRegulationImpact(PolicyImpact):
     policy: FinancialRegulation
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
     policy_maker: Regulators
+
 
 # TODO: think about more relationships
 # TODO: 
@@ -309,3 +361,14 @@ class FinancialRegulationImpact(PolicyImpact):
 
 
 bond = DebtInstrument(annual_return=0.05, interest_rate=0.05, issuer="Bank")
+
+# Judicial Entities
+SEC = Regulators()
+FCA = Regulators()
+CFTC = Regulators()
+
+# Financial Markets
+NYSE = StockExchange(name="New York Stock Exchange", country="US", currency="USD", regulatory_body=SEC)
+LSE = StockExchange(name="London Stock Exchange", country="UK", currency="GBP", regulatory_body=FCA)
+CME = DerivativesMarket(name="Chicago Mercantile Exchange", country="US", currency="USD", regulatory_body=CFTC)
+CBOT = CommodityMarket(name="Chicago Board of Trade", country="US", currency="USD", regulatory_body=CFTC)
