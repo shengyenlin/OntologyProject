@@ -86,10 +86,6 @@ class ForeignExchangeMarket(FinancialMarket):
 class CommodityMarket(FinancialMarket):
     pass
 
-@dataclass
-class CryptocurrencyMarket(FinancialMarket):
-    pass
-
 
 @dataclass
 class FinancialInstruments:
@@ -105,14 +101,14 @@ class FinancialInstruments:
     redemption_terms: str
 
 @dataclass
-class DebtInstrument(FinancialInstruments):
+class Debt(FinancialInstruments):
     # properties
     interest_rate: float
     issuer: str
     market: str
 
 @dataclass
-class Bond(DebtInstrument):
+class Bond(Debt):
     award_date: datetime.date
     call_price: float
     call_rate_basis: str
@@ -121,7 +117,7 @@ class Bond(DebtInstrument):
     funding_source: str
 
 @dataclass
-class Loan(DebtInstrument):
+class Loan(Debt):
     # Loan specific properties
     maturity_date: datetime.date  # 0 or more explicit dates
     negative_amortization: bool  # Boolean value
@@ -130,7 +126,7 @@ class Loan(DebtInstrument):
     disbursement_date: datetime.date  # Domain loan
 
 @dataclass
-class GovernmentDebtInstrument(DebtInstrument):
+class GovernmentDebt(Debt):
     # Inherited properties from Financial Instrument
     financial_instrument_short_name: str  # 0 or more short names
     nominal_value: float  # 0 or more monetary amounts
@@ -165,7 +161,6 @@ class PreferredStock(Equity):
     floating_shares: int  # Minimum 0 non-negative integer
     share_class: str  # Minimum 0 string to represent share class
     shares_authorized: int  # Some non-negative integer
-
 
 @dataclass
 class RestrictedStock(Equity):
@@ -307,9 +302,9 @@ class SupervisesInstitution:
     financial_institution: FinancialInstitutions
 
 @dataclass
-class IssuesSecurities:
-    government: Government
-    security: Union[Bond, DebtInstrument]
+# class IssuesSecurities:
+#     government: Government
+#     security: Union[Bond, DebtInstrument]
 
 @dataclass
 class ProvidesRating:
@@ -320,7 +315,7 @@ class ProvidesRating:
 @dataclass
 class OffersInsurance:
     insurance_company: InsuranceCompanies
-    insured_entity: Union[FinancialInstruments, FinancialInstitutions, JudicialEntity]
+    insured_entity: FinancialInstruments
     policy_details: str
 
 @dataclass
@@ -338,7 +333,7 @@ class InfluencesMarketThroughPolicy:
 class EnactsMonetaryPolicy:
     central_bank: CentralBank  # Adjusted from Government to CentralBank for specificity.
     monetary_policy: MonetaryPolicy
-
+ 
 @dataclass
 class ImplementsFiscalPolicy:
     government: Government
@@ -411,10 +406,6 @@ class PolicyMarketEffect:
     policy: GovernmentPolicy
     market: FinancialMarket
     effect_analysis: str
-
-
-
-from datetime import date, datetime
 
 # Instantiate Financial Markets
 nyse = StockExchange(
@@ -1183,3 +1174,64 @@ sp500_etf_as_underlying_for_derivative = UnderlyingAsset(
         commodity_value_as_of_execution_date=420.00,  # Hypothetical market value of the option
         nominal_value=420.00,
         effective_date=date(2023, 6, 
+
+
+# Instantiate the insurance of Goldman Sachs' operations
+goldman_sachs_operations_insurance = OffersInsurance(
+    insurance_company=InsuranceCompanies(
+        Jurisdiction="USA",
+        RegulatoryAuthority="Federal Insurance Office",
+        LegalSystem="Federal"
+    ),
+    insured_entity=goldman_sachs,
+    policy_details="Operational risk insurance policy"
+)
+
+# Instantiate the regulatory oversight by the SEC on Amazon Stock
+sec_oversight_amazon_stock = RegulatoryOversight(
+    regulator=sec,
+    entity=amazon_stock
+)
+
+# Instantiate a Supervisory Authority Over Market relationship for SEC supervision over Cryptocurrency Market
+sec_supervisory_authority_crypto_market = SupervisoryAuthorityOverMarket(
+    regulator=sec,
+    market=CryptocurrencyMarket(
+        name="Generic Cryptocurrency Exchange",
+        country="Global",
+        currency="Various Cryptocurrencies",
+        timezone="24/7",
+        opening_time="00:00",
+        closing_time="23:59"
+    )
+)
+
+# Instantiate the EnforcesRegulation relationship for the SEC enforcing Dodd-Frank on Goldman Sachs
+sec_enforces_dodd_frank_on_goldman = EnforcesRegulationOnInstitution(
+    regulator=sec,
+    financial_institution=goldman_sachs,
+    regulation=dodd_frank
+)
+
+# Instantiate a relationship for the compliance of Tesla Corporate Bonds with the Dodd-Frank Act
+tesla_bond_dodd_frank_compliance = RegulationCompliance(
+    entity=tesla_corporate_bond,
+    regulation=dodd_frank,
+    is_compliant=True,
+    compliance_details="Tesla bonds comply with all relevant Dodd-Frank regulations."
+)
+
+# Instantiate a relationship for the impact of the fiscal policy on the issuance of Tesla Corporate Bonds
+us_fiscal_policy_impact_tesla_bonds = FiscalPolicyImpact(
+    policy=us_federal_budget,
+    affected_entities=[tesla_corporate_bond],
+    policy_maker=us_treasury
+)
+
+# Instantiate a relationship for the advisory role of the SEC to the Money Market regarding new regulations
+sec_advisory_money_market_new_regulations = AdvisoryRole(
+    advisor=sec,
+    advisee=MoneyMarket(
+        name="U.S. Money Market",
+        country="USA",
+        curr
