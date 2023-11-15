@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from typing import Union
+import datetime
 
 
 #### Things ####
@@ -19,477 +20,6 @@ class FinancialMarket:
     timezone: str
     opening_time: str
     closing_time: str
-
-@dataclass
-class FinancialInstruments:
-    # properties
-    name: str
-    annual_return: float
-    risk: float
-    issued_institution: JudicialEntity # TODO: modify to a subclass of JudicialEntity
-    market: JudicialEntity # TODO: modify to a subclass of JudicialEntity, market where this financial instrument is traded
-
-    # Internal object properties
-    commodity_value_as_of_execution_date: float
-    nominal_value: float
-    principal_executive_office_address: str
-    redemption_terms: str
-    shareholder: 'ShareholderSubclass'
-    underlier: 'UnderlierSubclass'
-    value_expressed_in: str
-    holds_shares_in: 'CompanySubclass'
-    denominated_in: str
-    legally_recorded_in: str
-
-    # External object properties
-    acts_on: 'EntitySubclass'
-    applies_to: 'EntitySubclass'
-    comprises: list['FinancialInstrumentSubclass']
-    borrower: 'EntitySubclass'
-    contractual_element: str
-    currency: str
-    governing_jurisdiction: str
-    lender: 'EntitySubclass'
-    monetary_amount: float
-    quantity_value: float
-    registered_address: str
-    identifies: str
-    involves: 'EntitySubclass'
-    is_a_party_to: 'ContractSubclass'
-    is_affected_by: 'EventSubclass'
-    is_identified_by: str
-    is_included_in: 'CollectionSubclass'
-    is_issued_by: 'IssuerSubclass'
-    is_played_by: 'EntitySubclass'
-
-@dataclass
-class DebtInstrument(FinancialInstruments):
-    # properties
-    interest_rate: float
-    issuer: str
-    market: str
-
-@dataclass
-class Bond(DebtInstrument):
-    # Internal object properties
-    award_date: datetime.date
-    call_price: float
-    call_rate_basis: str
-    convertible_date: datetime.date
-    extraordinary_redemption_provision: str
-    final_maturity_date: datetime.date
-    first_call_price: float
-    first_coupon_payment_date: datetime.date
-    first_par_call_date: datetime.date
-    first_par_call_price: float
-    first_premium_call_date: datetime.date
-    first_premium_call_price: float
-    first_put_date: datetime.date
-    first_put_price: float
-    funding_source: str
-    last_coupon_payment_date: datetime.date
-    lockout_period: datetime.timedelta
-    municipal_trustee: str
-    original_issue_discount_amount: float
-    partial_redemption_allocation_convention: str
-    penultimate_coupon_payment_date: datetime.date
-    premium_amount: float
-    put_date: datetime.date
-    put_frequency: str
-    redemption_amount: float
-    remarketing_agent: str
-    reset_date_offset: datetime.timedelta
-    linked_to_fallback: bool
-
-    # External object properties
-    comprises: list['FinancialInstrumentSubclass']
-    defines_terms_for: str
-    has_argument: str
-    has_call_feature: bool
-    has_contractual_element: str
-    currency: str
-    data_source: str
-    date: datetime.date
-    date_period: datetime.timedelta
-    end_date: datetime.date
-    explicit_date: datetime.date
-    expression: str
-    interest_payment_terms: str
-    interest_rate: float
-    monetary_amount: float
-    objective: str
-    price: float
-    recurrence_interval: datetime.timedelta
-    relative_price_at_issue: float
-    relative_price_at_maturity: float
-    repayment_terms: str
-    schedule: 'ScheduleSubclass'
-    start_date: datetime.date
-    third_party: str
-    involves: 'EntitySubclass'
-    based_on: str
-    denominated_in: str
-    issued_by: 'IssuerSubclass'
-    played_by: 'EntitySubclass'
-    refers_to: str
-    registers: str
-    specifies_conversion_into: str
-
-    # Internal data properties
-    ceiling: float
-    floor: float
-    is_bank_qualified: bool
-    is_legal_opinion_available: bool
-    is_mandatory: bool
-    is_pro_rated: bool
-    super_sinker: bool
-
-    # External data properties
-    has_rate_value: float
-    is_callable: bool
-
-@dataclass
-class Loan(DebtInstrument):
-    # Loan specific properties
-    corresponding_account: list['LoanSpecificCustomerAccount']  # 0 or more accounts
-    guarantor: list['Guarantor']  # 0 or more guarantors
-    maturity_date: datetime.date  # 0 or more explicit dates
-    negative_amortization: bool  # Boolean value
-    principal_amount: float  # Some loan principal
-
-    # Inherited properties from DebtInstrument
-    borrower: 'Borrower'
-    call_feature: list['CallFeature']  # 0 or more call features
-    interest_payment_terms: 'InterestPaymentTerms'
-    lender: 'Lender'
-    offering: list['DebtOffering']  # 0 or more offerings
-    put_feature: list['PutFeature']  # 0 or more put features
-    redemption_terms: 'RedemptionProvision'
-    repayment_terms: 'PrincipalRepaymentTerms'
-
-    # Inherited properties from Contract
-    contract_party: list['ContractParty']  # 2 or more parties
-    contractual_element: list['ContractualElement']  # Some contractual elements
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from CreditAgreement
-    creditor: 'Creditor'
-    debtor: 'Debtor'
-    debt_terms: 'DebtTerms'
-    loan_or_credit_account: list['LoanOrCreditAccount']  # 0 or more accounts
-
-    # Inherited properties from FinancialInstrument
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: list['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: list['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: list['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Additional properties based on the ontology
-    disbursement_date: datetime.date  # Domain loan
-
-    # ... Additional methods and logic as required ...
-
-@dataclass
-class GovernmentDebtInstrument(DebtInstrument):
-    # Direct properties of Government Debt Instrument
-    issuer: 'Polity'  # is issued by some polity (played by some polity)
-
-    # Inherited properties from DebtInstrument
-    borrower: 'Borrower'
-    call_feature: List['CallFeature']  # 0 or more call features
-    interest_payment_terms: 'InterestPaymentTerms'
-    lender: 'Lender'
-    offering: List['DebtOffering']  # 0 or more offerings
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']
-
-    # Inherited properties from Credit Agreement
-    creditor: 'Creditor'
-    debtor: 'Debtor'
-    debt_terms: 'DebtTerms'
-    corresponding_account: List['LoanOrCreditAccount']  # 0 or more accounts
-    maturity_date: datetime.date  # 0 or more explicit dates
-
-    # Inherited properties from Financial Instrument
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'
-
-    # Additional properties specific to Government Debt Instrument can be added here
-
-@dataclass
-class Equity(FinancialInstruments):
-    # Inherited properties from FinancialInstruments
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'
-
-    # Inherited properties from Security
-    issued_in_form: List['SecurityForm']  # 0 or more forms
-    legally_recorded_in: 'Jurisdiction'  # Exactly 1 jurisdiction
-    registered: List['RegistrationAuthority']  # 0 or more authorities
-
-    # Additional properties specific to Equity (Share)
-    # Add any additional properties specific to shares here
-
-    # Example of additional properties
-    share_type: str  # Type of the share (e.g., common, preferred)
-    dividend_yield: float  # Dividend yield, if applicable
-    voting_rights: bool  # Indicates whether the share has voting rights
-
-@dataclass
-class CommonStock(Equity):
-    # Properties specific to CommonStock
-    dividend: float  # Minimum 0 ordinary dividend
-    floating_shares: int  # Minimum 0 non-negative integer
-    share_class: str  # Minimum 0 string to represent share class
-    share_payment_status: 'SharePaymentStatus'  # Some share payment status
-    shares_authorized: int  # Some non-negative integer
-
-    # Inherited properties from Equity
-    # Assuming these properties are already defined in the Equity class
-    # financial_instrument_short_name, nominal_value, securities_restriction,
-    # financial_instrument_classifier, industry_sector_classifier,
-    # contract_party, contractual_element, effective_date, etc.
-
-    # Additional properties specific to common shares
-    enhanced_voting_rights: bool  # Indicates enhanced voting rights
-    restricted: bool  # Indicates if the shares are restricted
-    fully_paid: bool  # Indicates if the shares are fully paid
-    nil_paid: bool  # Indicates if the shares are nil paid
-    partly_paid: bool  # Indicates if the shares are partly paid
-    unrestricted: bool  # Indicates if the shares are unrestricted
-
-    # Inherited properties from Contract
-    counterparty: 'Counterparty'
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'
-
-    # Additional methods and logic as required
-
-@dataclass
-class PreferredStock(Equity):
-    # Properties specific to PreferredStock
-    dividend: Union['OrdinaryDividend', 'PreferredDividend']  # Some ordinary or preferred dividend
-    maturity_date: datetime.date  # Minimum 0 explicit date
-    is_senior_to_common_share: bool  # Indicates if it is senior to common share
-
-    # Inherited properties from Equity
-    floating_shares: int  # Minimum 0 non-negative integer
-    share_class: str  # Minimum 0 string to represent share class
-    share_payment_status: 'SharePaymentStatus'  # Some share payment status
-    shares_authorized: int  # Some non-negative integer
-
-    # Additional properties specific to preferred shares
-    convertible: bool  # Indicates if the share is a convertible preferred share
-    cumulative: bool  # Indicates if the share is a cumulative preferred share
-    exchangeable: bool  # Indicates if the share is an exchangeable preferred share
-    extendable: bool  # Indicates if the share is an extendable preferred share
-    non_cumulative: bool  # Indicates if the share is a non-cumulative preferred share
-
-    # Inherited properties from Contract
-    counterparty: 'Counterparty'
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'
-
-    # Additional methods and logic as required
-
-@dataclass
-class RestrictedStock(Equity):
-    # Specific properties for RestrictedShare
-    enhanced_voting: bool  # Indicates if the share has enhanced voting rights
-    non_voting: bool  # Indicates if the share is non-voting
-    fully_paid: bool  # Indicates if the share is fully paid
-    nil_paid: bool  # Indicates if the share is nil paid
-    partly_paid: bool  # Indicates if the share is partly paid
-
-    # Inherited properties from Equity
-    floating_shares: int  # Minimum 0 non-negative integer
-    share_class: str  # Minimum 0 string to represent share class
-    share_payment_status: 'SharePaymentStatus'  # Some share payment status
-    shares_authorized: int  # Some non-negative integer
-
-    # Inherited properties from Financial Instrument
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'
-
-    # Additional methods and logic as required
-
-@dataclass
-class Derivative(FinancialInstruments):
-    # Specific properties for Derivative
-    derivative_terms: 'DerivativeTerms'  # Some derivative terms
-    settlement_terms: 'SettlementTerms'  # Some settlement terms
-    underlier: 'Underlier'  # Some underlier
-    valuation_terms: 'ValuationTerms'  # Some valuation terms
-
-    # Inherited properties from Financial Instruments
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']  # Some contractual elements
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'  # Some counterparty
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'  # Some contract principal
-
-    # Additional methods and logic as required
-
-@dataclass
-class Forward(Derivative):
-    # Inherited properties from Derivative
-    derivative_terms: 'DerivativeTerms'  # Some derivative terms
-    settlement_terms: 'SettlementTerms'  # Some settlement terms
-    underlier: 'Underlier'  # Some underlier
-    valuation_terms: 'ValuationTerms'  # Some valuation terms
-
-    # Additional properties specific to Forward
-    # (if any specific properties are needed for the Forward class, add them here)
-
-    # Inherited properties from Financial Instruments
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']  # Some contractual elements
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'  # Some counterparty
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'  # Some contract principal
-
-    # Additional methods and logic as required
-
-@dataclass
-class Option(Derivative):
-    # Specific properties for Option
-    lot_size: float  # Some decimal value for lot size
-
-    # Inherited properties from Derivative
-    derivative_terms: 'DerivativeTerms'  # Some derivative terms
-    settlement_terms: 'SettlementTerms'  # Some settlement terms
-    underlier: 'Underlier'  # Some underlier
-    valuation_terms: 'ValuationTerms'  # Some valuation terms
-
-    # Additional properties specific to Option
-    # If there are any additional properties specific to options (e.g., strike price, expiration date), add them here
-
-    # Inherited properties from Financial Instruments
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']  # Some contractual elements
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'  # Some counterparty
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'  # Some contract principal
-
-    # Additional methods and logic as required
-
-@dataclass
-class Future(Derivative):
-    # Specific properties for Future
-    # Properties that are typically relevant to futures contracts
-    settlement_date: datetime.date  # The date by which the contract is to be settled
-    contract_size: float  # The size or quantity of the asset in the contract
-    tick_size: float  # The minimum price increment of the traded instrument
-
-    # Inherited properties from Derivative
-    derivative_terms: 'DerivativeTerms'  # Some derivative terms
-    settlement_terms: 'SettlementTerms'  # Some settlement terms
-    underlier: 'Underlier'  # Some underlier
-    valuation_terms: 'ValuationTerms'  # Some valuation terms
-
-    # Inherited properties from Financial Instruments
-    financial_instrument_short_name: str  # 0 or more short names
-    nominal_value: float  # 0 or more monetary amounts
-    securities_restriction: List['SecuritiesRestriction']  # 0 or more restrictions
-    financial_instrument_classifier: List['FinancialInstrumentClassifier']  # 0 or more classifiers
-    industry_sector_classifier: List['IndustrySectorClassifier']  # 0 or more classifiers
-
-    # Inherited properties from Contract
-    contract_party: List['ContractParty']  # 2 or more parties
-    contractual_element: List['ContractualElement']  # Some contractual elements
-    effective_date: datetime.date  # 0 or more dates
-
-    # Inherited properties from Written Contract
-    counterparty: 'Counterparty'  # Some counterparty
-    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    execution_date: datetime.date  # 0 or more dates
-    execution_date_time_stamp: datetime.datetime  # 0 or more date time stamps
-    principal_party: 'ContractPrincipal'  # Some contract principal
-
-    # Additional methods and logic as required
 
 
 @dataclass
@@ -560,131 +90,127 @@ class CommodityMarket(FinancialMarket):
 class CryptocurrencyMarket(FinancialMarket):
     pass
 
-@dataclass
-class SecutityCompany():
-    pass
-
 
 @dataclass
-class EquityInstruments(FinancialInstruments):
+class FinancialInstruments:
     # properties
-    pass
+    name: str
+    annual_return: float
+    risk: float
+    issued_institution: JudicialEntity # TODO: modify to a subclass of JudicialEntity
+    market: JudicialEntity # TODO: modify to a subclass of JudicialEntity, market where this financial instrument is traded
+    commodity_value_as_of_execution_date: float
+    nominal_value: float
+    principal_executive_office_address: str
+    redemption_terms: str
+
+@dataclass
+class DebtInstrument(FinancialInstruments):
+    # properties
+    interest_rate: float
+    issuer: str
+    market: str
+
+@dataclass
+class Bond(DebtInstrument):
+    award_date: datetime.date
+    call_price: float
+    call_rate_basis: str
+    convertible_date: datetime.date
+    extraordinary_redemption_provision: str
+    funding_source: str
+
+@dataclass
+class Loan(DebtInstrument):
+    # Loan specific properties
+    maturity_date: datetime.date  # 0 or more explicit dates
+    negative_amortization: bool  # Boolean value
+    principal_amount: float  # Some loan principal
+    nominal_value: float  # 0 or more monetary amounts
+    disbursement_date: datetime.date  # Domain loan
+
+@dataclass
+class GovernmentDebtInstrument(DebtInstrument):
+    # Inherited properties from Financial Instrument
+    financial_instrument_short_name: str  # 0 or more short names
+    nominal_value: float  # 0 or more monetary amounts
+    effective_date_time_stamp: datetime.datetime  # 0 or more date time stamps
+    execution_date: datetime.date  # 0 or more dates
+    maturity_date: datetime.date
+
+@dataclass
+class Equity(FinancialInstruments):
+    # Inherited properties from FinancialInstruments
+    financial_instrument_short_name: str  # 0 or more short names
+    nominal_value: float  # 0 or more monetary amounts
+    share_type: str  # Type of the share (e.g., common, preferred)
+    dividend_yield: float  # Dividend yield, if applicable
+    voting_rights: bool  # Indicates whether the share has voting rights
+
+@dataclass
+class CommonStock(Equity):
+    # Properties specific to CommonStock
+    dividend: float  # Minimum 0 ordinary dividend
+    floating_shares: int  # Minimum 0 non-negative integer
+    share_class: str  # Minimum 0 string to represent share class
+    share_payment_status: 'SharePaymentStatus'  # Some share payment status
+    shares_authorized: int  # Some non-negative integer
+
+@dataclass
+class PreferredStock(Equity):
+    # Properties specific to PreferredStock
+    dividend: Union['OrdinaryDividend', 'PreferredDividend']  # Some ordinary or preferred dividend
+    maturity_date: datetime.date  # Minimum 0 explicit date
+    is_senior_to_common_share: bool  # Indicates if it is senior to common share
+    floating_shares: int  # Minimum 0 non-negative integer
+    share_class: str  # Minimum 0 string to represent share class
+    shares_authorized: int  # Some non-negative integer
+
+
+@dataclass
+class RestrictedStock(Equity):
+    # Specific properties for RestrictedShare
+    enhanced_voting: bool  # Indicates if the share has enhanced voting rights
+    non_voting: bool  # Indicates if the share is non-voting
+    fully_paid: bool  # Indicates if the share is fully paid
+    nil_paid: bool  # Indicates if the share is nil paid
+    partly_paid: bool  # Indicates if the share is partly paid
+
+    # Inherited properties from Equity
+    floating_shares: int  # Minimum 0 non-negative integer
+    share_class: str  # Minimum 0 string to represent share class
+    shares_authorized: int  # Some non-negative integer
 
 @dataclass
 class Derivative(FinancialInstruments):
-    # properties
-    pass
+    nominal_value: float  # 0 or more monetary amounts
+    effective_date: datetime.date  # 0 or more dates
+    execution_date: datetime.date  # 0 or more dates
 
 @dataclass
-class MutualFund(FinancialInstruments):
-    # properties
-    pass
+class Forward(Derivative):
+    nominal_value: float  # 0 or more monetary amounts
+    effective_date: datetime.date  # 0 or more dates
+    execution_date: datetime.date  # 0 or more dates
 
 @dataclass
-class ETF(FinancialInstruments):
-    # properties
-    pass
+class Option(Derivative):
+    # Specific properties for Option
+    lot_size: float  # Some decimal value for lot size
+    nominal_value: float  # 0 or more monetary amounts
+    effective_date: datetime.date  # 0 or more dates
+    execution_date: datetime.date  # 0 or more dates
 
 @dataclass
-class CommodityAndRealAssets(FinancialInstruments):
-    storage_cost: float
-    pass
-
-@dataclass
-class Cryptocurrencies(FinancialInstruments):
-    pass
-
-
-@dataclass
-class CentralBank(Government):
-    pass
-
-@dataclass
-class SecuritiesAndExchangeCommission(Regulators):
-    pass
-
-@dataclass
-class MortgageBackedSecurity(DebtInstrument):
-    pass
-
-@dataclass
-class AssetBackedSecurity(DebtInstrument):
-    pass
-
-# TODO: !
-@dataclass
-class CollateralizedDebtObligation(DebtInstrument):
-    pass
-
-@dataclass
-class CommonStock(EquityInstruments):
-    pass
-
-@dataclass
-class PreferredStock(EquityInstruments):
-    pass
-
-@dataclass
-class Warrant(EquityInstruments):
-    pass
-
-# TODO: fourth classes Turn to instances 
-# @dataclass
-# class Option(Derivative):
-#     pass
-
-# @dataclass
-# class Future(Derivative):
-#     pass
-
-# @dataclass
-# class Forward(Derivative):
-#     pass
-
-# @dataclass
-# class Swap(Derivative):
-#     pass
-
-# @dataclass
-# class Commodity(Derivative):
-#     pass
-
-# @dataclass
-# class IndexFund(MutualFund):
-#     pass
-
-# @dataclass
-# class BondFund(MutualFund):
-#     pass
-
-# @dataclass
-# class HedgeFund(MutualFund):
-#     pass
-
-# @dataclass
-# class RealEstateInvestmentTrust(MutualFund):
-#     pass
-
-# TODO: fourth classes Turn to instances 
-# @dataclass
-# class ExchangeTradedFund(ETF):
-#     pass
-
-# @dataclass
-# class CommodityETF(ETF):
-#     pass
-
-# @dataclass
-# class CurrencyETF(ETF):
-#     pass
-
-# @dataclass
-# class RealEstateETF(ETF):
-#     pass
-
-# @dataclass
-# class CryptocurrencyETF(ETF):
-#     pass
+class Future(Derivative):
+    # Specific properties for Future
+    # Properties that are typically relevant to futures contracts
+    settlement_date: datetime.date  # The date by which the contract is to be settled
+    contract_size: float  # The size or quantity of the asset in the contract
+    tick_size: float  # The minimum price increment of the traded instrument
+    nominal_value: float  # 0 or more monetary amounts
+    effective_date: datetime.date  # 0 or more dates
+    execution_date: datetime.date  # 0 or more dates
 
 #### Relations ####
 @dataclass
@@ -704,9 +230,10 @@ class MarketParticipation:
 
 @dataclass
 class Compliance:
-    financial_institution: FinancialInstitutions
-    regulator: Regulators
-    compliant: bool
+    entity: Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]
+    regulation: FinancialRegulation
+    is_compliant: bool
+    compliance_details: str  # Added to give context to the compliance status.
 
 @dataclass
 class JurisdictionalScope:
@@ -717,285 +244,942 @@ class JurisdictionalScope:
 class PolicyImpact:
     policy: GovernmentPolicy
     affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
-    policy_maker: Government
+    effect_analysis: str  # Replaced policy_maker with effect_analysis.
 
 @dataclass
 class FiscalPolicyImpact(PolicyImpact):
-    policy: FiscalPolicy
-    affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
-    policy_maker: Government
+    pass  # Inherits directly from PolicyImpact
 
 @dataclass
 class MonetaryPolicyImpact(PolicyImpact):
-    policy: MonetaryPolicy
-    affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
-    policy_maker: CentralBank
+    central_bank: CentralBank  # Changed policy_maker to central_bank.
 
 @dataclass
 class FinancialRegulationImpact(PolicyImpact):
-    policy: FinancialRegulation
-    affected_entities: List[Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]]
-    policy_maker: Regulators
+    regulator: Regulators  # Changed policy_maker to regulator.
 
-# TODO: think about more relationships
-# TODO: 
+@dataclass
+class IsIssuedBy:
+    instrument: FinancialInstruments
+    institution: FinancialInstitutions
+    issue_date: date
+    issue_price: float
 
-# @dataclass
-# class FinancialStability():
-#     pass
+@dataclass
+class IsRegulatedBy:
+    instrument: FinancialInstruments
+    regulator: Regulators
+    regulation_effective_date: date
+    regulation_id: str
 
-# @dataclass
-# class FinancialSystem():
-#     pass
+@dataclass
+class IsTradedIn:
+    instrument: FinancialInstruments
+    market: FinancialMarket
+    trading_start_date: date
+    trading_volume: float
 
-# @dataclass
-# class FinancialCrisis():
-#     pass
+@dataclass
+class IsAffectedBy:
+    instrument: FinancialInstruments
+    policy: GovernmentPolicy
+    policy_effect_date: date
+    policy_impact_description: str
+
+@dataclass
+class OperatesIn:
+    financial_institution: FinancialInstitutions
+    financial_market: FinancialMarket
+
+@dataclass
+class RegulatesMarket:
+    regulator: Regulators
+    market: FinancialMarket
+
+@dataclass
+class SetsPolicyForMarket:
+    policy: GovernmentPolicy
+    market: FinancialMarket
+
+@dataclass
+class SupervisesInstitution:
+    regulator: Regulators
+    financial_institution: FinancialInstitutions
+
+@dataclass
+class IssuesSecurities:
+    government: Government
+    security: Union[Bond, DebtInstrument]
+
+@dataclass
+class ProvidesRating:
+    rating_agency: CreditRatingAgency
+    financial_instrument: FinancialInstruments
+    rating: str
+
+@dataclass
+class OffersInsurance:
+    insurance_company: InsuranceCompanies
+    insured_entity: Union[FinancialInstruments, FinancialInstitutions, JudicialEntity]
+    policy_details: str
+
+@dataclass
+class EnforcesRegulation:
+    regulator: Regulators
+    regulation: FinancialRegulation
+
+@dataclass
+class InfluencesMarketThroughPolicy:
+    policy: GovernmentPolicy
+    market: FinancialMarket
+    impact_description: str
+
+@dataclass
+class EnactsMonetaryPolicy:
+    central_bank: CentralBank  # Adjusted from Government to CentralBank for specificity.
+    monetary_policy: MonetaryPolicy
+
+@dataclass
+class ImplementsFiscalPolicy:
+    government: Government
+    fiscal_policy: FiscalPolicy
+
+@dataclass
+class RegulatesFinancialInstrument:
+    regulator: Regulators
+    financial_instrument: FinancialInstruments
+
+@dataclass
+class SupervisoryAuthorityOverMarket:
+    regulator: Regulators
+    market: FinancialMarket
+
+@dataclass
+class ComplianceWithRegulation:
+    entity: Union[FinancialInstruments, FinancialInstitutions, FinancialMarket]
+    regulation: FinancialRegulation
+    is_compliant: bool
+
+@dataclass
+class AdvisoryRole:
+    advisor: Union[Regulators, Government]
+    advisee: Union[FinancialInstitutions, FinancialMarket]
+    advisory_purpose: str
+
+@dataclass
+class HoldBy:
+    holder: Union[FinancialInstitutions, JudicialEntity, Regulators, Government]
+    financial_instrument: FinancialInstruments
+    holding_amount: float
+    holding_date: date
+
+@dataclass
+class UnderlyingAsset:
+    derivative: Derivative
+    underlying_instrument: FinancialInstruments
+    relation_description: str
+
+@dataclass
+class RegulationCompliance:
+    entity: Union[FinancialInstruments, FinancialInstitutions]
+    regulation: FinancialRegulation
+    is_compliant: bool
+    compliance_details: str
+
+@dataclass
+class RegulatoryReview:
+    regulator: Regulators
+    entity: Union[FinancialInstruments, FinancialInstitutions]
+    review_outcome: str
+    review_date: date
+
+@dataclass
+class PolicyInstrumentEffect:
+    policy: GovernmentPolicy
+    financial_instrument: FinancialInstruments
+    effect_analysis: str
+
+@dataclass
+class RegulatoryImpactAssessment:
+    regulator: Regulators
+    market: FinancialMarket
+    impact_assessment: str
+    assessment_date: date
+
+@dataclass
+class PolicyMarketEffect:
+    policy: GovernmentPolicy
+    market: FinancialMarket
+    effect_analysis: str
 
 
-convertible_bond = Bond(
-    name='Convertible Bond', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
+
+from datetime import date, datetime
+
+# Instantiate Financial Markets
+nyse = StockExchange(
+    name="New York Stock Exchange",
+    country="USA",
+    currency="USD",
+    timezone="EST",
+    opening_time="09:30",
+    closing_time="16:00"
+)
+
+# Instantiate Financial Institutions
+goldman_sachs = SecuritiesFirms(
+    Jurisdiction="USA",
+    RegulatoryAuthority="SEC",
+    LegalSystem="Federal"
+)
+
+# Instantiate Regulators
+sec = Regulators(
+    Jurisdiction="USA",
+    RegulatoryAuthority="Securities and Exchange Commission",
+    LegalSystem="Federal"
+)
+
+# Instantiate Government Policies
+dodd_frank = FinancialRegulation(
+    Jurisdiction="USA",
+    RegulatoryAuthority="SEC",
+    LegalSystem="Federal"
+)
+
+# Instantiate Financial Instruments
+apple_stock = CommonStock(
+    name="Apple Inc. Common Stock",
+    annual_return=0.07,
+    risk=0.3,
+    issued_institution=goldman_sachs,  # Assuming Goldman Sachs was the underwriter
+    market=nyse,
+    commodity_value_as_of_execution_date=135.00,
+    nominal_value=135.00,
+    principal_executive_office_address="One Apple Park Way, Cupertino, California, U.S.",
+    redemption_terms="N/A",
+    dividend=0.85,
+    floating_shares=16700000000,
+    share_class="Common Stock",
+    share_payment_status="Paid",
+    shares_authorized=16700000000,
+    share_type="Common",
+    dividend_yield=0.0063,
+    voting_rights=True
+)
+
+# Instantiate Regulatory Oversight
+sec_oversight_apple = RegulatoryOversight(
+    regulator=sec,
+    entity=apple_stock
+)
+
+# Instantiate Market Participation
+apple_participation_nyse = MarketParticipation(
+    financial_instrument=apple_stock,
+    market=nyse
+)
+
+# Instantiate Compliance
+apple_compliance = Compliance(
+    financial_institution=goldman_sachs,
+    regulator=sec,
+    compliant=True
+)
+
+# Instantiate Regulatory Impact Assessment
+regulatory_impact_dodd_frank_nyse = RegulatoryImpactAssessment(
+    regulator=sec,
+    market=nyse,
+    impact_assessment="Increased reporting requirements for listed companies.",
+    assessment_date=date(2023, 1, 1)
+)
+
+# Instantiate Issuance
+apple_issuance = Issuance(
+    financial_instrument=apple_stock,
+    issuer=goldman_sachs
+)
+
+# Instantiate Compliance with Regulation
+apple_dodd_frank_compliance = ComplianceWithRegulation(
+    entity=apple_stock,
+    regulation=dodd_frank,
+    is_compliant=True
+)
+
+# Instantiate Regulatory Review
+sec_review_of_goldman = RegulatoryReview(
+    regulator=sec,
+    entity=goldman_sachs,
+    review_outcome="Compliant with all regulations as of last review.",
+    review_date=date(2023, 1, 1)
+)
+
+# Instantiate Policy Market Effect
+dodd_frank_effect_on_nyse = PolicyMarketEffect(
+    policy=dodd_frank,
+    market=nyse,
+    effect_analysis="The Dodd-Frank Act has led to increased stability in the NYSE through stringent compliance measures."
+)
+
+# Instantiate a Credit Rating Agency
+moodys = CreditRatingAgency(
+    Jurisdiction="USA",
+    RegulatoryAuthority="SEC",
+    LegalSystem="Federal"
+)
+
+# Instantiate a Government Body
+us_treasury = Government(
+    Jurisdiction="USA",
+    RegulatoryAuthority="Department of the Treasury",
+    LegalSystem="Federal"
+)
+
+# Instantiate a Financial Instrument (U.S. Treasury Bond)
+us_treasury_bond = GovernmentDebtInstrument(
+    name="U.S. Treasury Bond",
+    annual_return=0.02,  # Approximate return rate for illustrative purposes
+    risk=0.1,  # Treasury bonds are generally considered low risk
+    issued_institution=us_treasury,
+    market=nyse,
+    commodity_value_as_of_execution_date=100.00,
+    nominal_value=100.00,
+    principal_executive_office_address="1500 Pennsylvania Avenue, NW, Washington, D.C.",
+    redemption_terms="30 Year Bond",
+    effective_date_time_stamp=datetime(2022, 1, 1),
+    execution_date=date(2022, 1, 1),
+    maturity_date=date(2052, 1, 1)
+)
+
+# Instantiate Issuance of the U.S. Treasury Bond
+us_treasury_bond_issuance = Issuance(
+    financial_instrument=us_treasury_bond,
+    issuer=us_treasury
+)
+
+# Instantiate Rating Provided by Moody's
+moodys_rating_for_treasury_bond = ProvidesRating(
+    rating_agency=moodys,
+    financial_instrument=us_treasury_bond,
+    rating="Aaa"
+)
+
+# Instantiate a Financial Market (U.S. Bond Market)
+us_bond_market = BondMarket(
+    name="U.S. Bond Market",
+    country="USA",
+    currency="USD",
+    timezone="EST",
+    opening_time="08:00",
+    closing_time="17:00"
+)
+
+# Instantiate Market Participation of U.S. Treasury Bond in the U.S. Bond Market
+treasury_bond_participation_us_bond_market = MarketParticipation(
+    financial_instrument=us_treasury_bond,
+    market=us_bond_market
+)
+
+# Instantiate Regulatory Oversight by the SEC on Moody's
+sec_oversight_moodys = RegulatoryOversight(
+    regulator=sec,
+    entity=moodys
+)
+
+# Instantiate a Fiscal Policy (U.S. Federal Budget)
+us_federal_budget = FiscalPolicy(
+    Jurisdiction="USA",
+    RegulatoryAuthority="Congress",
+    LegalSystem="Federal"
+)
+
+# Instantiate Fiscal Policy Impact on U.S. Treasury Bond
+federal_budget_impact_on_treasury_bond = FiscalPolicyImpact(
+    policy=us_federal_budget,
+    affected_entities=[us_treasury_bond],
+    effect_analysis="The federal budget deficit has led to increased issuance of Treasury bonds."
+)
+
+# Instantiate Monetary Policy (Federal Reserve Interest Rate Decision)
+fed_interest_rate_decision = MonetaryPolicy(
+    Jurisdiction="USA",
+    RegulatoryAuthority="Federal Reserve",
+    LegalSystem="Federal"
+)
+
+# Instantiate Monetary Policy Impact on the U.S. Bond Market
+fed_policy_impact_on_bond_market = MonetaryPolicyImpact(
+    policy=fed_interest_rate_decision,
+    affected_entities=[us_bond_market],
+    effect_analysis="The Federal Reserve's decision to change the interest rate affected the bond yields."
+)
+
+# Instantiate a Supervisory Authority Role of the SEC over the NYSE
+sec_supervisory_authority_nyse = SupervisoryAuthorityOverMarket(
+    regulator=sec,
+    market=nyse
+)
+
+# Instantiate Compliance with Regulation (Dodd-Frank Act Compliance Check for Goldman Sachs)
+goldman_sachs_dodd_frank_compliance = ComplianceWithRegulation(
+    entity=goldman_sachs,
+    regulation=dodd_frank,
+    is_compliant=True
+)
+
+# Instantiate an Advisory Role (SEC Advisory to NYSE)
+sec_advisory_to_nyse = AdvisoryRole(
+    advisor=sec,
+    advisee=nyse,
+    advisory_purpose="Guidance on enhancing market surveillance systems."
+)
+
+# Instantiate a Corporate Bond from a known company
+tesla_corporate_bond = Bond(
+    name="Tesla Inc. 5% 2025 Corporate Bond",
+    annual_return=0.05,
+    risk=0.2,
+    issued_institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",  # Financial Industry Regulatory Authority
+        LegalSystem="Federal"
+    ),
+    market=nyse,
+    commodity_value_as_of_execution_date=105.00,
+    nominal_value=100.00,
+    principal_executive_office_address="3500 Deer Creek Road, Palo Alto, CA",
+    redemption_terms="Callable",
+    award_date=date(2020, 9, 1),
+    call_price=102.00,
+    call_rate_basis="5% Annual",
+    convertible_date=date(2023, 9, 1),
+    extraordinary_redemption_provision="Yes",
+    funding_source="Corporate Earnings"
+)
+
+# Instantiate a Municipal Bond
+san_francisco_municipal_bond = Bond(
+    name="San Francisco Water Revenue 4% 2030 Municipal Bond",
+    annual_return=0.04,
+    risk=0.1,
+    issued_institution=Government(
+        Jurisdiction="USA",
+        RegulatoryAuthority="Municipal Securities Rulemaking Board",
+        LegalSystem="State"
+    ),
+    market=us_bond_market,
+    commodity_value_as_of_execution_date=102.00,
+    nominal_value=100.00,
+    principal_executive_office_address="1 Dr Carlton B Goodlett Pl, San Francisco, CA 94102",
+    redemption_terms="Non-Callable",
+    award_date=date(2022, 4, 15),
+    call_price=100.00,
+    call_rate_basis="4% Annual",
+    convertible_date=date(2025, 4, 15),
+    extraordinary_redemption_provision="No",
+    funding_source="Municipal Water Revenue"
+)
+
+# Instantiate an Exchange-Traded Fund (ETF)
+sp500_etf = FinancialInstruments(
+    name="SPDR S&P 500 ETF Trust",
+    annual_return=0.1,  # Historical average return
+    risk=0.15,
+    issued_institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    market=nyse,
+    commodity_value_as_of_execution_date=415.00,  # The example price for the ETF
+    nominal_value=415.00,
+    principal_executive_office_address="State Street Bank and Trust Company, One Lincoln Street, Boston, MA 02111",
+    redemption_terms="Redeemable"
+)
+
+# Instantiate Stocks of well-known companies
+amazon_stock = CommonStock(
+    name="Amazon Inc. Common Stock",
+    annual_return=0.15,  # Hypothetical return
+    risk=0.25,
+    issued_institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    market=nyse,
+    commodity_value_as_of_execution_date=3300.00,
+    nominal_value=3300.00,
+    principal_executive_office_address="410 Terry Ave N, Seattle, WA 98109",
+    redemption_terms="N/A",
+    dividend=0.0,
+    floating_shares=500000000,
+    share_class="Common",
+    share_payment_status="Paid",
+    shares_authorized=500000000,
+    share_type="Common",
+    dividend_yield=0.0,
+    voting_rights=True
+)
+
+google_stock = CommonStock(
+    name="Alphabet Inc. (Google) Common Stock",
+    annual_return=0.22,  # Hypothetical return
+    risk=0.2,
+    issued_institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    market=nyse,
+    commodity_value_as_of_execution_date=2800.00,
+    nominal_value=2800.00,
+    principal_executive_office_address="1600 Amphitheatre Parkway, Mountain View, California, U.S.",
+    redemption_terms="N/A",
+    dividend=0.0,
+    floating_shares=300000000,
+    share_class="Common",
+    share_payment_status="Paid",
+    shares_authorized=300000000,
+    share_type="Common",
+    dividend_yield=0.0,
+    voting_rights=True
+)
+
+# Instantiate the Issuance of Tesla Corporate Bond
+tesla_bond_issuance = Issuance(
+    financial_instrument=tesla_corporate_bond,
+    issuer=goldman_sachs  # Assuming Goldman Sachs as the underwriter
+)
+
+# Instantiate the Regulatory Oversight by SEC on Tesla Corporate Bond
+sec_oversight_tesla_bond = RegulatoryOversight(
+    regulator=sec,
+    entity=tesla_corporate_bond
+)
+
+# Instantiate the Market Participation of Tesla Corporate Bond in the NYSE
+tesla_bond_nyse_participation = MarketParticipation(
+    financial_instrument=tesla_corporate_bond,
+    market=nyse
+)
+
+# Instantiate the Compliance of Tesla Corporate Bond with SEC Regulations
+tesla_bond_sec_compliance = Compliance(
+    financial_institution=goldman_sachs,
+    regulator=sec,
+    compliant=True
+)
+
+# Instantiate the Jurisdictional Scope of SEC
+sec_jurisdictional_scope = JurisdictionalScope(
+    jurisdiction=sec,
+    applicable_entities=[nyse, us_bond_market]
+)
+
+# Instantiate the Policy Impact of Dodd-Frank Act on Financial Instruments
+dodd_frank_policy_impact = PolicyImpact(
+    policy=dodd_frank,
+    affected_entities=[tesla_corporate_bond, amazon_stock, google_stock],
+    effect_analysis="The Dodd-Frank Act has implemented stricter capital requirements and risk management protocols."
+)
+
+# Instantiate the Fiscal Policy Impact of U.S. Federal Budget on Government Bonds
+us_federal_budget_impact = FiscalPolicyImpact(
+    policy=us_federal_budget,
+    affected_entities=[us_treasury_bond],
+    policy_maker=us_treasury  # The Treasury is typically involved in fiscal policy through budgeting.
+)
+
+# Instantiate the Monetary Policy Impact of Federal Reserve on the NYSE
+fed_policy_nyse_impact = MonetaryPolicyImpact(
+    policy=fed_interest_rate_decision,
+    affected_entities=[nyse],
+    central_bank=us_treasury  # The Federal Reserve is the central bank in this scenario.
+)
+
+# Instantiate the Financial Regulation Impact of SEC on Tesla Corporate Bond
+sec_regulation_tesla_impact = FinancialRegulationImpact(
+    policy=dodd_frank,
+    affected_entities=[tesla_corporate_bond],
+    regulator=sec
+)
+
+# Instantiate the IsIssuedBy relationship for Amazon Stock
+amazon_stock_issuance = IsIssuedBy(
+    instrument=amazon_stock,
+    institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    issue_date=date(1997, 5, 15),  # Amazon's IPO date
+    issue_price=18.00  # Amazon's IPO price
+)
+
+# Instantiate the IsRegulatedBy relationship for Amazon Stock
+amazon_stock_regulation = IsRegulatedBy(
+    instrument=amazon_stock,
+    regulator=sec,
+    regulation_effective_date=date(1997, 5, 15),
+    regulation_id="AMZN_SEC_REG_1997"
+)
+
+# Instantiate the IsTradedIn relationship for Amazon Stock
+amazon_stock_nyse_trading = IsTradedIn(
+    instrument=amazon_stock,
+    market=nyse,
+    trading_start_date=date(1997, 5, 15),
+    trading_volume=3_000_000  # Hypothetical trading volume on IPO date
+)
+
+# Instantiate the IsAffectedBy relationship for Google Stock
+google_stock_policy_effect = IsAffectedBy(
+    instrument=google_stock,
+    policy=dodd_frank,
+    policy_effect_date=date(2010, 7, 21),  # Dodd-Frank Act enactment date
+    policy_impact_description="The enactment of the Dodd-Frank Act has increased compliance costs for Google."
+)
+
+# Instantiate SupervisesInstitution relationship for SEC over Goldman Sachs
+sec_supervision_goldman = SupervisesInstitution(
+    regulator=sec,
+    financial_institution=goldman_sachs
+)
+
+# Instantiate IssuesSecurities relationship for U.S. Treasury issuing a bond
+us_treasury_issues_bond = IssuesSecurities(
+    government=us_treasury,
+    security=us_treasury_bond
+)
+
+# Instantiate ProvidesRating relationship for Moody's rating on Tesla Bond
+moodys_rating_tesla_bond = ProvidesRating(
+    rating_agency=moodys,
+    financial_instrument=tesla_corporate_bond,
+    rating="Baa1"  # Hypothetical Moody's rating
+)
+
+# Instantiate OffersInsurance relationship for an insurance company insuring Tesla Corporate Bond
+insurance_on_tesla_bond = OffersInsurance(
+    insurance_company=InsuranceCompanies(
+        Jurisdiction="USA",
+        RegulatoryAuthority="Federal Insurance Office",
+        LegalSystem="Federal"
+    ),
+    insured_entity=tesla_corporate_bond,
+    policy_details="Insurance against default on corporate bond"
+)
+
+# Instantiate EnforcesRegulation relationship for SEC enforcing the Dodd-Frank Act
+sec_enforces_dodd_frank = EnforcesRegulation(
+    regulator=sec,
+    regulation=dodd_frank
+)
+
+# Instantiate InfluencesMarketThroughPolicy relationship for the Dodd-Frank Act's influence on the NYSE
+dodd_frank_influences_nyse = InfluencesMarketThroughPolicy(
+    policy=dodd_frank,
+    market=nyse,
+    impact_description="The Dodd-Frank Act has reinforced market integrity and investor confidence in the NYSE."
+)
+
+# Instantiate EnactsMonetaryPolicy relationship for Federal Reserve's monetary policy
+fed_enacts_policy = EnactsMonetaryPolicy(
+    central_bank=CentralBank(
+        Jurisdiction="USA",
+        RegulatoryAuthority="Federal Reserve",
+        LegalSystem="Federal"
+    ),
+    monetary_policy=fed_interest_rate_decision
+)
+
+# Instantiate ImplementsFiscalPolicy relationship for U.S. Government's fiscal policy
+us_government_implements_fiscal_policy = ImplementsFiscalPolicy(
+    government=us_treasury,
+    fiscal_policy=us_federal_budget
+)
+
+# Instantiate RegulatesFinancialInstrument relationship for SEC regulation on Google Stock
+sec_regulates_google_stock = RegulatesFinancialInstrument(
+    regulator=sec,
+    financial_instrument=google_stock
+)
+
+# Instantiate SupervisoryAuthorityOverMarket relationship for SEC supervision over the Bond Market
+sec_supervisory_authority_bond_market = SupervisoryAuthorityOverMarket(
+    regulator=sec,
+    market=us_bond_market
+)
+
+# Instantiate ComplianceWithRegulation relationship for Amazon's compliance with SEC regulations
+amazon_compliance_with_sec = ComplianceWithRegulation(
+    entity=amazon_stock,
+    regulation=dodd_frank,
+    is_compliant=True
+)
+
+# Instantiate AdvisoryRole relationship for SEC's advisory role to the Cryptocurrency Market
+sec_advisory_to_crypto_market = AdvisoryRole(
+    advisor=sec,
+    advisee=CryptocurrencyMarket(
+        name="U.S. Cryptocurrency Market",
+        country="USA",
+        currency="USD",
+        timezone="EST",
+        opening_time="24/7",
+        closing_time="24/7"
+    ),
+    advisory_purpose="Guidance on regulatory compliance for cryptocurrency exchanges."
+)
+
+# Instantiate HoldBy relationship for a hypothetical investment firm holding Amazon Stock
+investment_firm_holds_amazon = HoldBy(
+    holder=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    financial_instrument=amazon_stock,
+    holding_amount=5000,
+    holding_date=date(2021, 1, 1)
+)
+
+# Instantiate UnderlyingAsset relationship for a derivative instrument based on Google Stock
+derivative_on_google = UnderlyingAsset(
+    derivative=Option(
+        name="Call Option on Google Stock",
+        annual_return=0.2,  # Hypothetical return for the option
+        risk=0.5,  # Options carry higher risk
+        issued_institution=SecuritiesFirms(
+            Jurisdiction="USA",
+            RegulatoryAuthority="FINRA",
+            LegalSystem="Federal"
+        ),
+        market=nyse,
+        commodity_value_as_of_execution_date=3000.00,  # Hypothetical market value of the option
+        nominal_value=3000.00,
+        effective_date=date(2023, 1, 1),
+        execution_date=date(2023, 1, 1)
+    ),
+    underlying_instrument=google_stock,
+    relation_description="This call option gives the right to buy Google Stock at a set price."
+)
+
+# Instantiate RegulatoryImpactAssessment relationship for the impact of SEC regulations on Tesla Bonds
+sec_impact_assessment_tesla = RegulatoryImpactAssessment(
+    regulator=sec,
+    market=nyse,
+    impact_assessment="Stringent SEC regulations have led to increased disclosure requirements for Tesla bonds.",
+    assessment_date=date.today()
+)
+
+# Instantiate PolicyMarketEffect relationship for the impact of monetary policy on the Foreign Exchange Market
+fed_policy_fx_market_effect = PolicyMarketEffect(
+    policy=fed_interest_rate_decision,
+    market=ForeignExchangeMarket(
+        name="Forex",
+        country="International",
+        currency="Multiple",
+        timezone="EST",
+        opening_time="24/7",
+        closing_time="24/7"
+    ),
+    effect_analysis="Federal Reserve's interest rate decisions have a significant impact on currency valuations and Forex market volatility."
+)
+
+# Instantiate a relationship for the impact of fiscal policy on the Money Market
+us_fiscal_policy_money_market_impact = FiscalPolicyImpact(
+    policy=us_federal_budget,
+    affected_entities=[MoneyMarket(
+        name="U.S. Money Market",
+        country="USA",
+        currency="USD",
+        timezone="EST",
+        opening_time="09:00",
+        closing_time="17:00"
+    )],
+    policy_maker=us_treasury
+)
+
+# Instantiate a relationship for the issuance of a new ETF
+sp500_etf_issuance = Issuance(
+    financial_instrument=sp500_etf,
+    issuer=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
     )
-    
-callable_bond = Bond(
-    name='Callable Bond', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
+)
+
+# Instantiate a relationship for the compliance of SPDR S&P 500 ETF with SEC regulations
+sp500_etf_sec_compliance = Compliance(
+    financial_institution=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    regulator=sec,
+    compliant=True
+)
+
+# Instantiate a relationship for the regulatory oversight of Moody's over San Francisco Municipal Bond
+moodys_oversight_sf_muni_bond = RegulatoryOversight(
+    regulator=moodys,
+    entity=san_francisco_municipal_bond
+)
+
+# Instantiate a relationship for the trading of the San Francisco Municipal Bond in the U.S. Bond Market
+sf_muni_bond_trading = MarketParticipation(
+    financial_instrument=san_francisco_municipal_bond,
+    market=us_bond_market
+)
+
+# Instantiate a relationship for the impact of regulatory changes on Amazon Stock
+sec_regulatory_changes_amazon_impact = RegulatoryImpactAssessment(
+    regulator=sec,
+    market=nyse,
+    impact_assessment="Recent SEC regulatory changes have necessitated additional compliance measures by Amazon.",
+    assessment_date=date.today()
+)
+
+# Instantiate a relationship for the advisory role of the SEC towards Goldman Sachs regarding new financial instruments
+sec_advisory_goldman_new_instruments = AdvisoryRole(
+    advisor=sec,
+    advisee=goldman_sachs,
+    advisory_purpose="Advisory on the introduction of new financial instruments and associated regulatory compliance."
+)
+
+# Instantiate a relationship for the holding of Google Stock by an investment firm
+investment_firm_holds_google = HoldBy(
+    holder=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    financial_instrument=google_stock,
+    holding_amount=10000,
+    holding_date=date(2021, 6, 1)
+)
+
+
+# Instantiate a relationship for Moody's providing a credit rating to Amazon's corporate bonds
+moodys_rating_amazon_bonds = ProvidesRating(
+    rating_agency=moodys,
+    financial_instrument=DebtInstrument(
+        name="Amazon 10-Year Corporate Bond",
+        annual_return=0.04,  # Hypothetical return
+        risk=0.2,
+        issued_institution=goldman_sachs,
+        market=us_bond_market,
+        commodity_value_as_of_execution_date=100.00,
+        nominal_value=100.00,
+        principal_executive_office_address="410 Terry Ave N, Seattle, WA 98109",
+        redemption_terms="Non-Callable",
+        interest_rate=0.04
+    ),
+    rating="Aa2"  # Hypothetical Moody's rating
+)
+
+# Instantiate a relationship for the SEC enforcing regulations on the Cryptocurrency Market
+sec_enforces_crypto_regulations = EnforcesRegulation(
+    regulator=sec,
+    regulation=FinancialRegulation(
+        Jurisdiction="USA",
+        RegulatoryAuthority="SEC",
+        LegalSystem="Federal"
+    )  # Assume this regulation is specific to cryptocurrencies
+)
+
+# Instantiate a relationship for the impact of U.S. Federal Budget on San Francisco Municipal Bonds
+us_budget_impact_sf_muni_bonds = FiscalPolicyImpact(
+    policy=us_federal_budget,
+    affected_entities=[san_francisco_municipal_bond],
+    policy_maker=us_treasury
+)
+
+# Instantiate a relationship for Goldman Sachs' compliance with SEC regulations
+goldman_sachs_sec_compliance = ComplianceWithRegulation(
+    entity=goldman_sachs,
+    regulation=dodd_frank,
+    is_compliant=True
+)
+
+# Instantiate a relationship for the trading of Tesla Corporate Bonds in the U.S. Bond Market
+tesla_bond_us_bond_market_trading = IsTradedIn(
+    instrument=tesla_corporate_bond,
+    market=us_bond_market,
+    trading_start_date=date(2020, 9, 2),  # Assume trading starts the day after issuance
+    trading_volume=500000  # Hypothetical trading volume
+)
+
+# Instantiate a relationship for the effect of U.S. monetary policy on Tesla Corporate Bonds
+fed_policy_effect_tesla_bonds = MonetaryPolicyImpact(
+    policy=fed_interest_rate_decision,
+    affected_entities=[tesla_corporate_bond],
+    central_bank=CentralBank(
+        Jurisdiction="USA",
+        RegulatoryAuthority="Federal Reserve",
+        LegalSystem="Federal"
+    )  # Assuming this is an instance of the Central Bank class
+)
+
+# Instantiate a relationship for the Federal Reserve setting monetary policy for the U.S. Money Market
+fed_sets_policy_for_money_market = SetsPolicyForMarket(
+    policy=fed_interest_rate_decision,
+    market=MoneyMarket(
+        name="U.S. Money Market Funds",
+        country="USA",
+        currency="USD",
+        timezone="EST",
+        opening_time="08:00",
+        closing_time="18:00"
     )
-
-government_bond = Bond(
-    name='Government Bond', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
-    )
-
-zero_coupon_bond = Bond(
-    name='Zero Coupon Bond', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
-    )
-
-corporate_bond = Bond(
-    name='Corporate Bond', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
-    )
-
-commercial_loan = Loan(
-    name='Commercial Loan', annual_return=0.05, 
-    risk=0.1, issued_institution='Bank of America', market='NYSE'
-    )
-
-construction_loan = Loan(
-
 )
 
-consumer_loan = Loan(
-    
-    )
-
-government_bond = GovernmentDebtInstrument(
-    issuer=Polity(name="Country A"),  # Assuming Polity is a defined class
-    borrower=Borrower(name="Government of Country A"),
-    call_feature=[CallFeature(description="Feature A")],  # List of CallFeature instances
-    interest_payment_terms=InterestPaymentTerms(terms="Fixed 5%"),
-    lender=Lender(name="Lender X"),
-    offering=[DebtOffering(details="Offering Details")],
-    contract_party=[ContractParty(name="Party 1"), ContractParty(name="Party 2")],
-    contractual_element=[ContractualElement(element="Element A")],
-    creditor=Creditor(name="Creditor Y"),
-    debtor=Debtor(name="Debtor Z"),
-    debt_terms=DebtTerms(terms="Term Details"),
-    corresponding_account=[LoanOrCreditAccount(account_id="12345")],
-    maturity_date=datetime.date(2030, 1, 1),
-    financial_instrument_short_name="GovBondA",
-    nominal_value=1000000.0,
-    securities_restriction=[SecuritiesRestriction(restriction="Restriction A")],
-    financial_instrument_classifier=[FinancialInstrumentClassifier(classifier="Classifier A")],
-    industry_sector_classifier=[IndustrySectorClassifier(classifier="Sector A")],
-    counterparty=Counterparty(name="Counterparty B"),
-    effective_date_time_stamp=datetime.datetime(2020, 1, 1, 12, 0),
-    execution_date=datetime.date(2020, 1, 1),
-    execution_date_time_stamp=datetime.datetime(2020, 1, 1, 12, 0),
-    principal_party=ContractPrincipal(name="Principal C")
+# Instantiate a relationship for the SEC's supervision of the issuance of new government bonds
+sec_supervises_new_gov_bond_issuance = SupervisoryAuthorityOverMarket(
+    regulator=sec,
+    market=us_bond_market
 )
 
-municipal_security = GovernmentDebtInstrument(
-    issuer=Polity(name="City of Springfield"),  # An example issuer (city government)
-    borrower=Borrower(name="Municipal Government"),
-    call_feature=[CallFeature(description="Municipal Call Feature")],
-    interest_payment_terms=InterestPaymentTerms(terms="Variable Rate"),
-    lender=Lender(name="Municipal Bond Lender"),
-    offering=[DebtOffering(details="Public Infrastructure Offering")],
-    contract_party=[ContractParty(name="Municipality"), ContractParty(name="Investor Group")],
-    contractual_element=[ContractualElement(element="Municipal Bond Terms")],
-    creditor=Creditor(name="Municipal Creditor"),
-    debtor=Debtor(name="Municipal Debtor"),
-    debt_terms=DebtTerms(terms="Municipal Debt Terms"),
-    corresponding_account=[LoanOrCreditAccount(account_id="98765")],
-    maturity_date=datetime.date(2040, 1, 1),
-    financial_instrument_short_name="MuniSecurity2020",
-    nominal_value=500000.0,
-    securities_restriction=[SecuritiesRestriction(restriction="Municipal Restriction")],
-    financial_instrument_classifier=[FinancialInstrumentClassifier(classifier="Municipal Bonds")],
-    industry_sector_classifier=[IndustrySectorClassifier(classifier="Public Infrastructure")],
-    counterparty=Counterparty(name="Infrastructure Investor"),
-    effective_date_time_stamp=datetime.datetime(2020, 6, 1, 9, 0),
-    execution_date=datetime.date(2020, 6, 1),
-    execution_date_time_stamp=datetime.datetime(2020, 6, 1, 9, 0),
-    principal_party=ContractPrincipal(name="Municipal Principal")
+# Instantiate a relationship for the insurance of assets held by Goldman Sachs
+insurance_on_goldman_assets = OffersInsurance(
+    insurance_company=InsuranceCompanies(
+        Jurisdiction="USA",
+        RegulatoryAuthority="State Insurance Regulators",
+        LegalSystem="State"
+    ),
+    insured_entity=goldman_sachs,
+    policy_details="Asset insurance covering corporate bonds and other securities"
 )
 
-
-sovereign_debt_instrument = GovernmentDebtInstrument(
-    issuer=Polity(name="Country B"),  # An example issuer (national government)
-    borrower=Borrower(name="Government of Country B"),
-    call_feature=[CallFeature(description="Sovereign Call Feature")],
-    interest_payment_terms=InterestPaymentTerms(terms="Fixed 4%"),
-    lender=Lender(name="International Finance Corporation"),
-    offering=[DebtOffering(details="National Infrastructure Development")],
-    contract_party=[ContractParty(name="National Government"), ContractParty(name="Global Investors")],
-    contractual_element=[ContractualElement(element="Sovereign Loan Agreement")],
-    creditor=Creditor(name="Sovereign Creditor"),
-    debtor=Debtor(name="Sovereign Debtor"),
-    debt_terms=DebtTerms(terms="Sovereign Debt Terms"),
-    corresponding_account=[LoanOrCreditAccount(account_id="123456789")],
-    maturity_date=datetime.date(2050, 12, 31),
-    financial_instrument_short_name="SovDebt2020",
-    nominal_value=100000000.0,
-    securities_restriction=[SecuritiesRestriction(restriction="International Trade Restriction")],
-    financial_instrument_classifier=[FinancialInstrumentClassifier(classifier="Sovereign Debt")],
-    industry_sector_classifier=[IndustrySectorClassifier(classifier="National Infrastructure")],
-    counterparty=Counterparty(name="International Investor"),
-   
-
-apple_common_stock = CommonStock(
-    financial_instrument_short_name="AAPL",
-    nominal_value=145.30,  # Example share price
-    securities_restriction=[],
-    financial_instrument_classifier=[],
-    industry_sector_classifier=[],
-    contract_party=[],
-    contractual_element=[],
-    effective_date=datetime.date(2022, 1, 1),
-    counterparty=None,
-    effective_date_time_stamp=datetime.datetime(2022, 1, 1, 9, 0),
-    execution_date=datetime.date(2022, 1, 1),
-    execution_date_time_stamp=datetime.datetime(2022, 1, 1, 9, 0),
-    principal_party=None,
-    floating_shares=10000000,  # Hypothetical number of floating shares
-    share_class="Class A",
-    share_payment_status="Fully Paid",
-    shares_authorized=5000000000,  # Hypothetical authorized shares
-    enhanced_voting_rights=False,
-    restricted=False,
-    fully_paid=True,
-    nil_paid=False,
-    partly_paid=False,
-    unrestricted=True
+# Instantiate a relationship for an investment firm holding SPDR S&P 500 ETF Trust shares
+investment_firm_holds_sp500_etf = HoldBy(
+    holder=SecuritiesFirms(
+        Jurisdiction="USA",
+        RegulatoryAuthority="FINRA",
+        LegalSystem="Federal"
+    ),
+    financial_instrument=sp500_etf,
+    holding_amount=20000,
+    holding_date=date(2021, 5, 1)
 )
 
-tesla_preferred_stock = PreferredStock(
-    financial_instrument_short_name="TSLA-P",
-    nominal_value=730.00,  # Example share price for preferred stock
-    securities_restriction=[],
-    financial_instrument_classifier=[],
-    industry_sector_classifier=[],
-    contract_party=[],
-    contractual_element=[],
-    effective_date=datetime.date(2022, 2, 1),
-    counterparty=None,
-    effective_date_time_stamp=datetime.datetime(2022, 2, 1, 10, 0),
-    execution_date=datetime.date(2022, 2, 1),
-    execution_date_time_stamp=datetime.datetime(2022, 2, 1, 10, 0),
-    principal_party=None,
-    floating_shares=500000,  # Hypothetical number of floating shares for preferred stock
-    share_class="Preferred",
-    share_payment_status="Partly Paid",
-    shares_authorized=1000000,  # Hypothetical authorized preferred shares
-    convertible=True,
-    cumulative=True,
-    exchangeable=False,
-    extendable=False,
-    non_cumulative=False,
-    is_senior_to_common_share=True,
-    dividend=0.05  # Hypothetical dividend rate
-)
-
-amazon_restricted_share = RestrictedShare(
-    financial_instrument_short_name="AMZN-R",
-    nominal_value=3300.00,  # Example share price for restricted stock
-    securities_restriction=[],
-    financial_instrument_classifier=[],
-    industry_sector_classifier=[],
-    contract_party=[],
-    contractual_element=[],
-    effective_date=datetime.date(2022, 3, 1),
-    counterparty=None,
-    effective_date_time_stamp=datetime.datetime(2022, 3, 1, 11, 0),
-    execution_date=datetime.date(2022, 3, 1),
-    execution_date_time_stamp=datetime.datetime(2022, 3, 1, 11, 0),
-    principal_party=None,
-    floating_shares=200000,  # Hypothetical number of floating restricted shares
-    share_class="Restricted",
-    share_payment_status="Fully Paid",
-    shares_authorized=500000,  # Hypothetical authorized restricted shares
-    enhanced_voting=False,
-    non_voting=True,
-    fully_paid=True,
-    nil_paid=False,
-    partly_paid=False,
-    unrestricted=False
-)
-
-forward_instance = Forward(
-    financial_instrument_short_name="ForwardExample",
-    nominal_value=100000,  # Example nominal value
-    derivative_terms=DerivativeTerms(terms="Specific Terms for Forward"),
-    settlement_terms=SettlementTerms(terms="Settlement Terms"),
-    underlier=Underlier(asset="Commodity or Financial Asset"),
-    valuation_terms=ValuationTerms(terms="Valuation Method"),
-    contract_party=[ContractParty("Party A"), ContractParty("Party B")],
-    contractual_element=[ContractualElement("Contractual Element for Forward")],
-    effective_date=datetime.date(2023, 1, 1),
-    counterparty=Counterparty("Counterparty Name"),
-    effective_date_time_stamp=datetime.datetime(2023, 1, 1, 9, 0),
-    execution_date=datetime.date(2023, 1, 1),
-    execution_date_time_stamp=datetime.datetime(2023, 1, 1, 9, 0),
-    principal_party=ContractPrincipal("Principal Party Name")
-)
-
-option_instance = Option(
-    financial_instrument_short_name="OptionExample",
-    nominal_value=50000,  # Example nominal value
-    derivative_terms=DerivativeTerms(terms="Specific Terms for Option"),
-    settlement_terms=SettlementTerms(terms="Settlement Terms"),
-    underlier=Underlier(asset="Stock or Index"),
-    valuation_terms=ValuationTerms(terms="Valuation Method"),
-    contract_party=[ContractParty("Party C"), ContractParty("Party D")],
-    contractual_element=[ContractualElement("Contractual Element for Option")],
-    effective_date=datetime.date(2023, 2, 1),
-    counterparty=Counterparty("Counterparty Name"),
-    effective_date_time_stamp=datetime.datetime(2023, 2, 1, 10, 0),
-    execution_date=datetime.date(2023, 2, 1),
-    execution_date_time_stamp=datetime.datetime(2023, 2, 1, 10, 0),
-    principal_party=ContractPrincipal("Principal Party Name"),
-    lot_size=100  # Example lot size
-)
-
-future_instance = Future(
-    financial_instrument_short_name="FutureExample",
-    nominal_value=200000,  # Example nominal value
-    derivative_terms=DerivativeTerms(terms="Specific Terms for Future"),
-    settlement_terms=SettlementTerms(terms="Settlement Terms"),
-    underlier=Underlier(asset="Energy or Agricultural Product"),
-    valuation_terms=ValuationTerms(terms="Valuation Method"),
-    contract_party=[ContractParty("Party E"), ContractParty("Party F")],
-    contractual_element=[ContractualElement("Contractual Element for Future")],
-    effective_date=datetime.date(2023, 3, 1),
-    counterparty=Counterparty("Counterparty Name"),
-    effective_date_time_stamp=datetime.datetime(2023, 3, 1, 11, 0),
-    execution_date=datetime.date(2023, 3, 1),
-    execution_date_time_stamp=datetime.datetime(2023, 3, 1, 11, 0),
-    principal_party=ContractPrincipal("Principal Party Name"),
-    settlement_date=datetime.date(2023, 12, 1),  # Example settlement date
-    contract_size=500,  # Example contract size
-    tick_size=0.05  # Example tick size
-)
+# Instantiate a relationship for an underlying asset of a derivative product tied to the S&P 500 index
+sp500_etf_as_underlying_for_derivative = UnderlyingAsset(
+    derivative=Derivative(
+        name="S&P 500 Index Option",
+        annual_return=0.15,  # Hypothetical return
+        risk=0.5,
+        issued_institution=SecuritiesFirms(
+            Jurisdiction="USA",
+            RegulatoryAuthority="FINRA",
+            LegalSystem="Federal"
+        ),
+        market=nyse,
+        commodity_value_as_of_execution_date=420.00,  # Hypothetical market value of the option
+        nominal_value=420.00,
+        effective_date=date(2023, 6, 
